@@ -21,6 +21,7 @@ import FloatingOfferButton from "./components/FloatingOfferButton";
 import CustomCursor from "./components/CustomCursor";
 import AzureCursor from "./components/AzureCursor";
 import SideFloatOffer from "./components/SideFloatOffer";
+import BenefitsOfJoiningCourse from "./components/Benefits";
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
         {/* <Navbar /> */}
         <Hero />
         <main className="relative z-0">
+          <BenefitsOfJoiningCourse/>
           <AboutUs />
           <WhatYouLearn />
           <Curriculum />

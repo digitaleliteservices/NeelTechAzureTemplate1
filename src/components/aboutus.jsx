@@ -131,7 +131,7 @@ export default function AboutUs() {
         </div>
 
         {/* ================= YOUTUBE VIDEO SECTION ================= */}
-        <div
+        {/* <div
           className={`mt-24 transition-all duration-700 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
@@ -147,7 +147,6 @@ export default function AboutUs() {
           </div>
 
           <div className="relative max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-slate-200 bg-black">
-            {/* Responsive 16:9 Wrapper */}
             <div className="relative w-full pt-[56.25%]">
               <iframe
                 className="absolute inset-0 w-full h-full"
@@ -159,7 +158,7 @@ export default function AboutUs() {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
