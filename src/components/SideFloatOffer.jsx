@@ -1,14 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   X,
-  AlertCircle,
   MessageCircle,
   Clock,
   ChevronRight,
   Percent,
   Sparkles,
   Zap,
-  Calendar,
   Users,
   Gift,
 } from "lucide-react";
@@ -29,12 +27,13 @@ export default function SideFloatOffer() {
   const vibrationTimer = useRef(null);
   const scrollTimer = useRef(null);
   const countdownTimer = useRef(null);
+  const isClosing = useRef(false); // Add ref to track closing state
 
   // Calculate end time (5 days from now)
   const calculateTimeLeft = () => {
     const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 5); // 5 days from now
-    endDate.setHours(23, 59, 59, 999); // End of day
+    endDate.setDate(endDate.getDate() + 5);
+    endDate.setHours(23, 59, 59, 999);
 
     const now = new Date();
     const difference = endDate.getTime() - now.getTime();
@@ -51,7 +50,7 @@ export default function SideFloatOffer() {
     return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   };
 
-  // Handle scroll to show/hide the offer
+  // Handle scroll to show/hide the offer - FIXED
   useEffect(() => {
     const handleScroll = () => {
       if (scrollTimer.current) {
@@ -60,17 +59,22 @@ export default function SideFloatOffer() {
 
       scrollTimer.current = setTimeout(() => {
         const scrollPosition = window.scrollY;
+        const offerClosed =
+          localStorage.getItem("sideFloatOfferClosed") === "true";
+
+        if (isClosing.current) return; // Don't interfere if closing
 
         // Show offer after scrolling 300px if not closed
-        if (scrollPosition > 300 && !isClosed) {
+        if (scrollPosition > 300 && !offerClosed) {
           setIsVisible(true);
           setShowMiniIcon(false);
+          setIsClosed(false);
         } else if (scrollPosition < 100) {
           setIsVisible(false);
         }
 
         // Show mini icon when scrolled down and offer is closed
-        if (scrollPosition > 300 && isClosed) {
+        if (scrollPosition > 300 && offerClosed) {
           setShowMiniIcon(true);
         } else if (scrollPosition < 100) {
           setShowMiniIcon(false);
@@ -82,9 +86,13 @@ export default function SideFloatOffer() {
 
     // Initial check
     setTimeout(() => {
-      if (window.scrollY > 300 && !isClosed) {
+      const scrollPosition = window.scrollY;
+      const offerClosed =
+        localStorage.getItem("sideFloatOfferClosed") === "true";
+
+      if (scrollPosition > 300 && !offerClosed) {
         setIsVisible(true);
-      } else if (window.scrollY > 300 && isClosed) {
+      } else if (scrollPosition > 300 && offerClosed) {
         setShowMiniIcon(true);
       }
     }, 1000);
@@ -95,14 +103,12 @@ export default function SideFloatOffer() {
         clearTimeout(scrollTimer.current);
       }
     };
-  }, [isClosed]);
+  }, []); // Remove isClosed dependency to avoid re-triggering
 
   // Countdown timer
   useEffect(() => {
-    // Set initial time
     setTimeLeft(calculateTimeLeft());
 
-    // Update timer every second
     countdownTimer.current = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
@@ -114,23 +120,18 @@ export default function SideFloatOffer() {
     };
   }, []);
 
-  // Vibration effect - enhanced pattern
+  // Vibration effect
   useEffect(() => {
     if (!isVisible || isHovering || isClosed) return;
 
     const vibrateCycle = () => {
       setIsVibrating(true);
-
-      // Stop vibration after 3 seconds
       setTimeout(() => {
         setIsVibrating(false);
       }, 3000);
     };
 
-    // Initial vibration after 1s delay
     const initialDelay = setTimeout(vibrateCycle, 1000);
-
-    // Set up repeating pattern - 3s on, 4s off
     vibrationTimer.current = setInterval(vibrateCycle, 7000);
 
     return () => {
@@ -149,35 +150,49 @@ export default function SideFloatOffer() {
     );
   };
 
-  const handleClose = () => {
-    setIsClosed(true);
+  // FIXED: Handle close with proper state management
+  const handleClose = useCallback(() => {
+    if (isClosing.current) return; // Prevent multiple calls
+
+    isClosing.current = true;
+
+    // Clear any pending scroll timers
+    if (scrollTimer.current) {
+      clearTimeout(scrollTimer.current);
+    }
+
+    // Update state in the correct order
     setIsVisible(false);
+    setIsClosed(true);
     setShowMiniIcon(true);
 
-    // Store in localStorage so it persists across page reloads
-    if (typeof window !== "undefined") {
-      localStorage.setItem("sideFloatOfferClosed", "true");
-    }
-  };
+    // Store in localStorage
+    localStorage.setItem("sideFloatOfferClosed", "true");
 
-  const handleReopen = () => {
+    // Reset closing flag after state updates
+    setTimeout(() => {
+      isClosing.current = false;
+    }, 100);
+  }, []);
+
+  // FIXED: Handle reopen
+  const handleReopen = useCallback(() => {
+    // Clear localStorage first
+    localStorage.removeItem("sideFloatOfferClosed");
+
+    // Update state
     setIsClosed(false);
     setIsVisible(true);
     setShowMiniIcon(false);
+  }, []);
 
-    // Remove from localStorage
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("sideFloatOfferClosed");
-    }
-  };
-
-  // Check localStorage on mount
+  // Check localStorage on mount - FIXED
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const wasClosed = localStorage.getItem("sideFloatOfferClosed");
-      if (wasClosed === "true") {
-        setIsClosed(true);
-      }
+    const wasClosed = localStorage.getItem("sideFloatOfferClosed") === "true";
+    if (wasClosed) {
+      setIsClosed(true);
+      setIsVisible(false);
+      setShowMiniIcon(true);
     }
   }, []);
 
@@ -204,10 +219,13 @@ export default function SideFloatOffer() {
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 animate-shimmer" />
         </div>
 
-        {/* Close button */}
+        {/* Close button - FIXED: Added pointer-events-auto and stopPropagation */}
         <button
-          onClick={handleClose}
-          className="absolute -top-2 -right-2 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-50 transition-all duration-200 z-10 hover:scale-110"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent event bubbling
+            handleClose();
+          }}
+          className="absolute -top-2 -right-2 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-50 transition-all duration-200 z-10 hover:scale-110 pointer-events-auto"
           title="Close offer"
         >
           <X className="w-4 h-4 text-red-600" />
@@ -291,26 +309,6 @@ export default function SideFloatOffer() {
             <div className="h-1 w-full bg-gradient-to-r from-transparent via-red-300/30 to-transparent rounded-full mt-3" />
           </div>
 
-          {/* Premium Offer Features */}
-          {/* <div className="space-y-3 mb-6">
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-yellow-400 to-red-400" />
-              <span>Complete Azure Certification Prep</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-yellow-400 to-red-400" />
-              <span>Hands-on Labs & Real Projects</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-yellow-400 to-red-400" />
-              <span>Expert Mentorship & Job Support</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-yellow-400 to-red-400" />
-              <span>Free Study Materials & Certification</span>
-            </div>
-          </div> */}
-
           {/* Stats */}
           <div className="grid grid-cols-2 gap-3 mb-6">
             <div className="bg-white/10 rounded-lg p-3 text-center backdrop-blur-sm">
@@ -342,12 +340,6 @@ export default function SideFloatOffer() {
             <span className="text-sm">CLAIM 30% DISCOUNT NOW</span>
             <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
           </button>
-
-          {/* Footer note */}
-          {/* <p className="text-center text-xs text-red-200 mt-4">
-            <Clock className="w-3 h-3 inline mr-1" />
-            Offer valid for {timeLeft.days} more days • Limited seats available
-          </p> */}
         </div>
 
         {/* Decorative corner elements */}
@@ -378,7 +370,7 @@ export default function SideFloatOffer() {
         onClick={handleReopen}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
-        className="group relative bg-gradient-to-br from-red-500 via-red-600 to-red-700 text-white rounded-full shadow-2xl hover:shadow-3xl p-4 transform transition-all duration-300 hover:scale-110"
+        className="group relative bg-gradient-to-br from-red-500 via-red-600 to-red-700 text-white rounded-full shadow-2xl hover:shadow-3xl p-4 transform transition-all duration-300 hover:scale-110 pointer-events-auto"
         title="🔥 30% OFF Azure Training"
       >
         {/* Animated background */}
@@ -399,16 +391,6 @@ export default function SideFloatOffer() {
               <span className="text-[10px] font-black">30</span>
             </div>
           </div>
-          {/* <div className="relative">
-            <div
-              className="flex flex-col items-center justify-center
-                  bg-white text-red-600 rounded-full
-                  w-8 h-8 shadow-md"
-            >
-              <span className="text-[9px] font-bold -mb-0.5"></span>
-              <span className="text-[13px] font-black">30%</span>
-            </div>
-          </div> */}
 
           {/* Sparkle effects */}
           <Sparkles className="absolute -top-1 -left-1 w-3 h-3 text-yellow-300 animate-ping" />

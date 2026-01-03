@@ -27,7 +27,7 @@ export default function App() {
   return (
     <>
       <CustomCursor />
-      <SideFloatOffer />
+      {/* <SideFloatOffer /> */}
       {/* <AzureCursor /> */}
 
       {/* <OfferBanner /> */}
