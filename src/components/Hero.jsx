@@ -132,6 +132,9 @@ export default function Hero() {
       "_blank"
     );
   };
+  // const handleWhatsAppClick = () => {
+  //   window.open("https://chat.whatsapp.com/I6NL9crBf5fLcxQFbXzT9v", "_blank");
+  // };
 
   return (
     <section

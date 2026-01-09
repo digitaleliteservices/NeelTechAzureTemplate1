@@ -196,15 +196,20 @@ export default function Navbar({ variant = "default" }) {
             </button> */}
             <button
               onClick={() =>
+                // window.open(
+                //   "https://wa.me/916361866299?text=Hello!%20I%20want%20to%20enroll%20in%20Azure%20training.%20Please%20share%20admission%20details%20and%20procedure.",
+                //   "_blank"
+                // )
                 window.open(
-                  "https://wa.me/916361866299?text=Hello!%20I%20want%20to%20enroll%20in%20Azure%20training.%20Please%20share%20admission%20details%20and%20procedure.",
+                  "https://chat.whatsapp.com/I6NL9crBf5fLcxQFbXzT9v",
                   "_blank"
                 )
               }
               className="group relative px-5 py-2 bg-gradient-to-r from-[#0B5AA2] to-[#F7941D] hover:from-[#0D6BC2] hover:to-[#FFA942] text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex-shrink-0 overflow-hidden"
             >
               <span className="relative z-10 flex items-center gap-3">
-                <span>Enroll Now</span>
+                {/* <span>Enroll Now</span> */}
+                <span>Join Free Demo</span>
                 <svg
                   className="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -257,15 +262,20 @@ export default function Navbar({ variant = "default" }) {
             </button> */}
             <button
               onClick={() =>
+                // window.open(
+                //   "https://wa.me/916361866299?text=Hello!%20I%20want%20to%20enroll%20in%20the%20Azure%20training%20course.%20Please%20share%20admission%20details.",
+                //   "_blank"
+                // )
                 window.open(
-                  "https://wa.me/916361866299?text=Hello!%20I%20want%20to%20enroll%20in%20the%20Azure%20training%20course.%20Please%20share%20admission%20details.",
+                  "https://chat.whatsapp.com/I6NL9crBf5fLcxQFbXzT9v",
                   "_blank"
                 )
               }
               className="group relative px-5 py-2 bg-gradient-to-r from-[#0B5AA2] to-[#F7941D] hover:from-[#0D6BC2] hover:to-[#FFA942] text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex-shrink-0 overflow-hidden"
             >
               <span className="relative z-10 flex items-center gap-3">
-                <span>Enroll Now</span>
+                {/* <span>Enroll Now</span> */}
+                <span>Join Free Demo</span>
                 <svg
                   className="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
                   fill="none"
