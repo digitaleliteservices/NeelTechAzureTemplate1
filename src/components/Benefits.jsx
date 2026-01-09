@@ -677,10 +677,11 @@ export default function BenefitsOfJoiningCourse() {
             <div className="relative w-full pt-[56.25%]">
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/SiK6n-_W6-g"
-                title="Neel Technologies Azure Training"
+                src="https://www.youtube.com/embed/HVDEZIXsXN0?si=zYr13754oiMW3gKE"
+                title="YouTube video player"
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
             </div>
