@@ -22,43 +22,39 @@ import CustomCursor from "./components/CustomCursor";
 import AzureCursor from "./components/AzureCursor";
 import SideFloatOffer from "./components/SideFloatOffer";
 import BenefitsOfJoiningCourse from "./components/Benefits";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 export default function App() {
   return (
     <>
       <CustomCursor />
-      {/* <SideFloatOffer /> */}
-      {/* <AzureCursor /> */}
 
-      {/* <OfferBanner /> */}
-      {/* <OfferModal/> */}
-      {/* <OfferModal /> */}
-      {/* <FloatingOfferButton /> */}
-      <div>
-        {/* <Navbar /> */}
-        <Hero />
-        <main className="relative z-0">
-          <BenefitsOfJoiningCourse/>
-          <AboutUs />
-          <WhatYouLearn />
-          <Curriculum />
-          <KeyFeatures />
-          <WhyChooseUs />
-          <HowToRegister />
-          <Testimonials />
-          <FAQ />
-          <WhatsAppTouch />
-          <Footer />
-        </main>
-        <FloatingIcons />
-        {/* <Stats /> */}
-        {/* <Features /> */}
-        {/* <Curriculum /> */}
-        {/* <Career /> */}
-        {/* <FAQ /> */}
-        {/* <CTA /> */}
-        {/* <Footer /> */}
-      </div>
+      <Routes>
+    
+        {/* Actual page */}
+        <Route
+          path="/"
+          element={
+            <>
+              <Hero />
+              <main className="relative z-0">
+                <BenefitsOfJoiningCourse />
+                <AboutUs />
+                <WhatYouLearn />
+                <Curriculum />
+                <KeyFeatures />
+                <WhyChooseUs />
+                <HowToRegister />
+                <Testimonials />
+                <FAQ />
+                <WhatsAppTouch />
+                <Footer />
+              </main>
+              <FloatingIcons />
+            </>
+          }
+        />
+      </Routes>
     </>
   );
 }
